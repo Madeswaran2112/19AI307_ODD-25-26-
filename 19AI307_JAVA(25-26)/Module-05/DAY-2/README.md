@@ -1,38 +1,31 @@
-# Ex.No:4(B)  IMPLEMENT SOLID PRINCIPLES IN JAVA PROGRAM 
+# Ex.No:5(B) SERIALIZATION AND DESERIALIZATION 
 
 ## QUESTION:
-In a large office, multiple departments send print jobs to a shared central printer. To manage load and prevent collision, a Print Spooler Manager handles all job submissions.
+Write a Java program to read a string from the user, compress it in memory using ByteArrayOutputStream + GZIPOutputStream, and then decompress it back using ByteArrayInputStream + GZIPInputStream.
 
-The IT team insists that there should be only one spooler manager instance in the entire system. Regardless of how many jobs or departments exist, all jobs must pass through this one manager.
-
-Your task is to simulate a singleton print job queue. Each print job submitted increases the queue count.
 
 ## AIM:
-To write a Java program that demonstrates the Singleton Design Pattern, ensuring only one instance of a Print Spooler Manager exists to handle job queue management.
+
+To write a Java program that reads a string from the user, compresses it using GZIP compression, and then decompresses it back to its original form.
 
 ## ALGORITHM :
 1.	Start the program.
 2.	Import the necessary package 'java.util'
-3.	Create a PrintSpooler class with:
-
-    A private static instance.
-
-    A private constructor.
-
-    A public static getInstance() method to return the single instance.
-
-4. Maintain a counter that represents the number of print jobs.
-5. In the main() method, simulate two departments submitting print jobs.
-6. Access the same instance of the Print Spooler and increment the job count.
-7. Display the print job queue.
-8. Stop the program.
-
+3.	Read a string from the user using Scanner.
+4. Create a ByteArrayOutputStream object to hold compressed data.
+5. Wrap it with GZIPOutputStream and write the user string into it to perform compression.
+6. Convert compressed data into a byte array.
+7. Create a ByteArrayInputStream object using the compressed byte array.
+8. Wrap it with GZIPInputStream to decompress the content.
+9. Read decompressed bytes and convert them back into the original string.
+10. Display original, compressed size, and decompressed results.
+11. End the program.
 
 
 ## PROGRAM:
  ```
 /*
-Program to implement a SOLID Principles in Java Program
+Program to implement a Serialization and Deserialization using Java
 Developed by: MADESWARAN M
 RegisterNumber: 212223040106
 */
@@ -40,49 +33,67 @@ RegisterNumber: 212223040106
 
 ## SOURCE CODE:
 ```
-import java.util.*;
+import java.io.*;
+import java.util.Scanner;
+import java.util.zip.GZIPOutputStream;
+import java.util.zip.GZIPInputStream;
 
-class PrintSpoolerManager {
-    private static PrintSpoolerManager instance;
-    private int jobCount = 0;
-
-    private PrintSpoolerManager() {}
-
-    public static PrintSpoolerManager getInstance() {
-        if (instance == null) {
-            instance = new PrintSpoolerManager();
-        }
-        return instance;
-    }
-
-    public int submitJob(String department) {
-        jobCount++;
-        return jobCount;
-    }
-}
-
-public class prog {
+public class GZIPMemoryExample {
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        int n = sc.nextInt();
-        sc.nextLine();
+        Scanner scanner = new Scanner(System.in);
 
-        for (int i = 0; i < n; i++) {
-            String dept = sc.nextLine();
-            PrintSpoolerManager spooler = PrintSpoolerManager.getInstance();
-            int total = spooler.submitJob(dept);
-            System.out.println(dept + " submitted a print job. Total Jobs in Queue: " + total);
+        try {
+            String input = scanner.nextLine();
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            GZIPOutputStream gzipOut = new GZIPOutputStream(baos);
+            gzipOut.write(input.getBytes("UTF-8"));
+            gzipOut.close(); 
+
+            byte[] compressedData = baos.toByteArray();
+            System.out.println("Compressed data (bytes):");
+            for (byte b : compressedData) {
+                System.out.print(b + " ");
+            }
+            System.out.println("\nTotal bytes: " + compressedData.length);
+
+            ByteArrayInputStream bais = new ByteArrayInputStream(compressedData);
+            GZIPInputStream gzipIn = new GZIPInputStream(bais);
+            InputStreamReader reader = new InputStreamReader(gzipIn, "UTF-8");
+            BufferedReader br = new BufferedReader(reader);
+
+            StringBuilder decompressed = new StringBuilder();
+            String line;
+            while ((line = br.readLine()) != null) {
+                decompressed.append(line);
+            }
+
+            System.out.println("\nDecompressed string:");
+            System.out.println(decompressed.toString());
+
+            br.close();
+            gzipIn.close();
+            bais.close();
+
+        } catch (IOException e) {
+            System.out.println("Error: " + e.getMessage());
+        } finally {
+            scanner.close();
         }
     }
 }
 ```
 
 
-## OUTPUT:
 
-![java42](https://github.com/ABINAYA-27-76/19AI307_ODD-25-26-/blob/307e4889adff0712306078adcc9b86614a3f814f/19AI307_JAVA(25-26)/Module-04/DAY-2/java42.png)
+
+
+
+## OUTPUT:
+![java52](https://github.com/ABINAYA-27-76/19AI307_ODD-25-26-/blob/4629176025934c52170b68fd2b511f5724754685/19AI307_JAVA(25-26)/Module-05/DAY-2/java52.png)
+
 
 ## RESULT:
-Thus, the program to simulate a Singleton Print Spooler Manager using SOLID principles was successfully implemented and executed.
+Thus, the Java program to compress and decompress a string using ByteArrayOutputStream, GZIPOutputStream, ByteArrayInputStream, and GZIPInputStream was successfully implemented and executed.
 
 
